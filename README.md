@@ -8,6 +8,7 @@ sudo pip install beautifulsoup4
 sudo pip install lxml
 
 Usage:
+
 python scrape-espn.py yyyymmdd teamname
 
 For example,
