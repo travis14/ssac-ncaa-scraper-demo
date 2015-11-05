@@ -4,13 +4,6 @@ from time import sleep
 import sys
 import csv
 
-'''
-First, define the parameters we want to take in 
-'''
-'''
-First, we go to an example website. Let's say http://scores.espn.go.com//ncb/scoreboard?confId=50&date=20150208
-'''
-
 ESPNDayBaseURL = "http://scores.espn.go.com/ncb/scoreboard?confId=50&date="
 ESPNPlayByPlayBaseURL = "http://scores.espn.go.com/ncb/playbyplay?gameId=" 
 
@@ -19,10 +12,10 @@ def getPlaysSoup(gameId):
 
 def getPlays(gameId):
 	playSoup = getPlaysSoup(gameId)
-	table = playSoup.find("table", "mod-data mod-pbp")
+	playTable = playSoup.find("table", "mod-data mod-pbp")
 	plays = []
-	if table:
-		for row in table.find_all("tr", lambda tr: tr == "odd" or tr == "even"):
+	if playTable:
+		for row in playTable.find_all("tr", lambda tr: tr == "odd" or tr == "even"):
 			play = []
 			for info in row.find_all("td"):
 				if info: play.append(info.string.replace(u"\xa0", "")) 
@@ -39,11 +32,21 @@ def getGameId(teamName, day):
 		if team.find_all("a")[0].get("title").lower() == teamName.lower():
 			return team.get("id")
 
+'''
+Example website: http://scores.espn.go.com//ncb/scoreboard?confId=50&date=20150208
+'''
+#Takes in a day and team parameter
 day = sys.argv[1] #assume that the format is YYYYMMDD 
 team = sys.argv[2]
+
+#Gets the gameId
 gameId = getGameId(team, day).replace('-hTeamName', '')
 print gameId
+
+#Gets plays from the gameID
 plays = getPlays(gameId)
+
+#Prints out all the plays from the game
 for play in plays:
 	print play
 
